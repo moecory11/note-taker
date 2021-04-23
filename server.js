@@ -12,6 +12,7 @@ app.use(express.static("public"));
 
 const readFileAsync = util.promisify(fs.readFile);
 
+
 app.get('/api/notes', (req, res) => {
     readFileAsync('./db/db.json', "utf8")
     .then(data => {
@@ -28,11 +29,13 @@ app.get('/notes', (req, res) => {
 
 app.get('/api/notes', (req, res) => res.json(notes));
 
+const storage = JSON.parse(fs.readFileSync("./db/db.json", "utf-8"))
 app.post('/api/notes',(req, res)=> {
-        notes.push(req.body)
-        res.json(req.body)
-})
-
+    const newNotes = req.body
+    storage.push(newNotes);
+    fs.writeFileSync("./db/db.json", JSON.stringify(storage));
+    res.json(storage);
+});
 
 app.listen(PORT, () => {
     console.log(`App listening on PORT: ${PORT}`);
