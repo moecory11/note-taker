@@ -2,6 +2,7 @@
 const path = require("path");
 const express = require('express');
 const fs = require('fs');
+const util = require('util');
 const app = express();
 //Sets up Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
@@ -9,16 +10,16 @@ app.use(express.json());
 const PORT = process.env.PORT || 8080;
 app.use(express.static("public"));
 
+const readFileAsync = util.promisify(fs.readFile);
+
 app.get('/api/notes', (req, res) => {
-
-    fs.readFile('./db/db.json', "utf8", (err, data) => {
-        let notes = JSON.parse(data);
-        console.log(notes)
-    });
-
+    readFileAsync('./db/db.json', "utf8")
+    .then(data => {
+        return res.json(JSON.parse(data));
+    }) 
 });
 
-app.get('/', (req, res) => {
+app.get('', (req, res) => {
     res.sendFile(path.join(__dirname, "public/index.html"))
 });
 app.get('/notes', (req, res) => {
