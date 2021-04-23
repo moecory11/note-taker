@@ -29,6 +29,7 @@ app.get('/notes', (req, res) => {
 
 app.get('/api/notes', (req, res) => res.json(notes));
 
+//Post new notes to db
 const storage = JSON.parse(fs.readFileSync("./db/db.json", "utf-8"))
 app.post('/api/notes',(req, res)=> {
     const newNotes = req.body
@@ -37,6 +38,7 @@ app.post('/api/notes',(req, res)=> {
     res.json(storage);
 });
 
+//Listener
 app.listen(PORT, () => {
     console.log(`App listening on PORT: ${PORT}`);
   });
